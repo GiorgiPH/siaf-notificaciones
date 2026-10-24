@@ -28,7 +28,7 @@ export function NotificacionesFilters({ query, onChange }: NotificacionesFilters
         placeholder="Buscar por número de orden u oficio..."
         value={texto}
         onChange={setTexto}
-        className="w-72"
+        className="w-full sm:w-72"
       />
       <DateRangePicker
         placeholder="Fecha del oficio"

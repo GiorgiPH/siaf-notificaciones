@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { cn } from '@/core/lib/utils/cn';
 
-/**
- * Área de texto del DS (shadcn `textarea` ajustado a tokens). Mismo tratamiento visual que `Input`
- * (`ds-input`: borde, foco y `aria-invalid`), en varias líneas y sin redimensionar.
- */
+// STOPGAP: falta Textarea en el DS — no hay área de texto de varias líneas. `bunx shadcn add textarea` agregó al
+// package.json una dependencia ajena (`cn`), así que se dejó el componente de shadcn con las clases de `Input` del DS
+// (`ds-input`: borde, foco y `aria-invalid`). Cuando el DS publique el suyo, se reemplaza manteniendo la misma API
+// (props nativas de `<textarea>`).
+/** Área de texto de varias líneas, sin redimensionar, con el mismo tratamiento visual que `Input`. */
 export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(
   ({ className, ...props }, ref) => {
     return (

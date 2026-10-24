@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AlertBanner } from '@/core/components/ui/alert-banner';
+import { Badge } from '@/core/components/ui/badge';
 import { Button } from '@/core/components/ui/button';
 import {
   Dialog,
@@ -17,10 +18,37 @@ import { Field } from '@/core/components/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/core/components/ui/select';
 import { Textarea } from '@/core/components/ui/textarea';
 import type { ActionState } from '@/core/lib/action-state';
-import { formatCurrency, formatDate } from '@/core/lib/utils/format';
+import { formatCurrency, formatDate, formatDateTime } from '@/core/lib/utils/format';
 import { editarNotificacionAction } from '../actions';
-import { ESTATUS_LABEL } from '../constants';
-import type { NotificacionDetalle, Prioridad } from '../types';
+import { ESTATUS_LABEL, ETIQUETA_FECHA_RESULTADO, PAQUETE_ESTADO_BADGE, PAQUETE_ESTADO_LABEL } from '../constants';
+import type { EstatusNotificacion } from '../schemas';
+import type { NotificacionDetalle, Prioridad, SeguimientoNotificacion } from '../types';
+import { DatosLista, type DatoLista } from './datos-lista';
+
+const SIN_DATO = '—';
+
+/** Paquete (con su estado), notificador, fechas del paquete, resultado y observaciones (PRD 6.3, detalle). */
+function datosSeguimiento(seguimiento: SeguimientoNotificacion, estatus: EstatusNotificacion): readonly DatoLista[] {
+  const { paquete } = seguimiento;
+  const datos: DatoLista[] = [
+    {
+      label: 'Paquete',
+      value: (
+        <span className="flex flex-wrap items-center gap-2">
+          #{paquete.id}
+          <Badge variant={PAQUETE_ESTADO_BADGE[paquete.estado]}>{PAQUETE_ESTADO_LABEL[paquete.estado]}</Badge>
+        </span>
+      ),
+    },
+    { label: 'Notificador', value: seguimiento.notificador ?? SIN_DATO },
+    { label: 'Fecha programada', value: formatDate(paquete.fechaProgramada) },
+    { label: 'Apertura del paquete', value: formatDateTime(paquete.fechaApertura) },
+    { label: 'Cierre del paquete', value: formatDateTime(paquete.fechaCierre) },
+    { label: ETIQUETA_FECHA_RESULTADO[estatus], value: formatDateTime(seguimiento.fechaResultado) },
+  ];
+  if (seguimiento.observaciones) datos.push({ label: 'Observaciones', value: seguimiento.observaciones });
+  return datos;
+}
 
 interface NotificacionFormDialogProps {
   open: boolean;
@@ -33,7 +61,8 @@ const initialState: ActionState = {};
 
 /**
  * Edición de datos de campo (PRD 6.3): los datos de la orden se leen del SIAF y no se editan; domicilio, referencia
- * y prioridad se corrigen solo en la notificación (no actualizan el padrón) y solo mientras está Por Asignar.
+ * y prioridad se corrigen solo en la notificación (no actualizan el padrón) y solo mientras está Por Asignar. En
+ * cualquier otro estatus el mismo modal es el detalle de solo lectura (`editable` lo decide el backend).
  */
 export function NotificacionFormDialog({ open, onOpenChange, notificacion, prioridades }: NotificacionFormDialogProps) {
   const [state, formAction, isPending] = useActionState(editarNotificacionAction, initialState);
@@ -51,12 +80,12 @@ export function NotificacionFormDialog({ open, onOpenChange, notificacion, prior
     }
   }, [state, onOpenChange]);
 
-  const datosOrden: ReadonlyArray<{ label: string; value: string }> = [
+  const datosOrden: readonly DatoLista[] = [
     { label: 'Num. Orden', value: notificacion.numeroOrden },
-    { label: 'Num. Oficio', value: notificacion.numeroOficio ?? '—' },
+    { label: 'Num. Oficio', value: notificacion.numeroOficio ?? SIN_DATO },
     { label: 'Fecha Oficio', value: formatDate(notificacion.fechaOficio) },
-    { label: 'ID Insumo', value: notificacion.idInsumo ?? '—' },
-    { label: 'ID Bloque', value: notificacion.idBloque ?? '—' },
+    { label: 'ID Insumo', value: notificacion.idInsumo ?? SIN_DATO },
+    { label: 'ID Bloque', value: notificacion.idBloque ?? SIN_DATO },
     { label: 'Monto Presuntiva', value: formatCurrency(notificacion.presuntiva) },
   ];
 
@@ -67,7 +96,7 @@ export function NotificacionFormDialog({ open, onOpenChange, notificacion, prior
           <input type="hidden" name="idRevision" value={notificacion.idRevision} />
           {notificacion.version !== null && <input type="hidden" name="version" value={notificacion.version} />}
           <DialogHeader>
-            <DialogTitle>Edición de notificación</DialogTitle>
+            <DialogTitle>{soloLectura ? 'Detalle de la notificación' : 'Edición de notificación'}</DialogTitle>
             <DialogDescription>
               Las correcciones quedan solo en la notificación; no modifican el padrón del SIAF.
             </DialogDescription>
@@ -75,18 +104,17 @@ export function NotificacionFormDialog({ open, onOpenChange, notificacion, prior
           <DialogBody>
             <div className="flex flex-col gap-6">
               {soloLectura && (
-                <AlertBanner variant="warning">
+                <AlertBanner variant="info">
                   La notificación está {ESTATUS_LABEL[notificacion.estatus]}: sus datos ya no se pueden modificar.
                 </AlertBanner>
               )}
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 rounded-xl border border-border-low bg-bg-surface-low p-4 sm:grid-cols-3">
-                {datosOrden.map(({ label, value }) => (
-                  <div key={label} className="flex flex-col gap-0.5">
-                    <dt className="ds-label-sm text-content-low">{label}</dt>
-                    <dd className="ds-body-md text-content-high">{value}</dd>
-                  </div>
-                ))}
-              </dl>
+              <DatosLista titulo="Datos de la orden" datos={datosOrden} />
+              {notificacion.seguimiento && (
+                <DatosLista
+                  titulo="Seguimiento"
+                  datos={datosSeguimiento(notificacion.seguimiento, notificacion.estatus)}
+                />
+              )}
               <div className="flex flex-col gap-4">
                 <Field label="Prioridad*" htmlFor="idPrioridad" error={state.fieldErrors?.idPrioridad}>
                   <Select name="idPrioridad" value={idPrioridad} onValueChange={setIdPrioridad} disabled={soloLectura}>

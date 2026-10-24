@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { CircleCheck, CircleX, Inbox, Package, Send } from 'lucide-react';
-import { ADMIN_NOTIFICACIONES_ROLES, ROLES, hasAnyRole } from '@/core/auth/roles';
-import { MIS_PAQUETES_PATH, NOTIFICACIONES_PATH } from '@/core/auth/routes';
+import { getPerfil } from '@/core/auth/perfil.service';
+import { HOME_PATH, NOTIFICACIONES_PATH } from '@/core/auth/routes';
 import { requireSession } from '@/core/auth/session';
 import { AppPageHeader } from '@/core/components/app-page-header';
 import { AlertBanner } from '@/core/components/ui/alert-banner';
@@ -15,31 +15,35 @@ import { APP_DESCRIPTION } from '@/core/config/app';
 import { isApiException } from '@/core/http/api-error';
 import { AnioFilter } from '@/features/tablero/components/anio-filter';
 import { KpiCard } from '@/features/tablero/components/kpi-card';
-import { ESTATUS_TABLERO, MESES_CORTOS } from '@/features/tablero/constants';
+import { ESTATUS_TABLERO, MESES_CORTOS, TABLERO_GRID, TABLERO_TITLE } from '@/features/tablero/constants';
 import { tableroQuerySchema } from '@/features/tablero/schemas';
 import { getResumenTablero } from '@/features/tablero/services/tablero.service';
 import type { ResumenTablero } from '@/features/tablero/types';
 
-export const metadata: Metadata = { title: 'Tablero' };
+export const metadata: Metadata = { title: TABLERO_TITLE };
 
 interface InicioDashboardPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-/** Primera pantalla: tablero del administrador (skill `dashboard-view`). El notificador va a sus paquetes. */
+/**
+ * Primera pantalla (skill `dashboard-view`). El Tablero es un módulo más: si el backend no lo da en el menú (p. ej. al
+ * notificador), se va a la primera pantalla que sí tiene, sin decidirlo por rol en el front.
+ */
 export default async function InicioDashboardPage({ searchParams }: InicioDashboardPageProps) {
-  const { user } = await requireSession();
-  const esAdmin = hasAnyRole(user, ADMIN_NOTIFICACIONES_ROLES);
-  if (!esAdmin && hasAnyRole(user, [ROLES.notificador])) redirect(MIS_PAQUETES_PATH);
+  const [{ user }, perfil] = await Promise.all([requireSession(), getPerfil()]);
 
-  if (!esAdmin) {
+  if (!perfil.menu.some((modulo) => modulo.url === HOME_PATH)) {
+    const primera = perfil.menu[0];
+    if (primera) redirect(primera.url);
+    // El login ya rechaza a quien no tiene módulos en este sistema; solo pasa si se los quitaron durante la sesión.
     return (
       <div className="flex min-h-full flex-col">
         <AppPageHeader title={`Hola, ${user.displayName}`} subtitle={APP_DESCRIPTION} />
-        <div className="flex flex-col gap-2 p-8">
-          <p className="ds-body-md text-content-low">
-            Tu usuario no tiene un rol del portal de notificaciones. Solicita el acceso al administrador del SIAF.
-          </p>
+        <div className="flex flex-col gap-8 p-8">
+          <AlertBanner variant="info">
+            Tu usuario ya no tiene pantallas en {perfil.sistema.nombre}. Solicita el acceso al administrador del SIAF.
+          </AlertBanner>
         </div>
       </div>
     );
@@ -57,7 +61,7 @@ export default async function InicioDashboardPage({ searchParams }: InicioDashbo
   return (
     <div className="flex min-h-full flex-col">
       <AppPageHeader
-        title="Tablero"
+        title={TABLERO_TITLE}
         subtitle={`Hola, ${user.displayName}`}
         actions={
           <Button variant="outline" asChild>
@@ -75,7 +79,7 @@ function Tablero({ resumen }: { resumen: ResumenTablero }) {
 
   return (
     <>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
+      <div className={TABLERO_GRID.kpis}>
         <KpiCard label="Por asignar" value={porEstatus.porAsignar} icon={Inbox} />
         <KpiCard label="Por notificar (en campo)" value={porEstatus.porNotificar} icon={Send} />
         <KpiCard label="Notificadas" value={porEstatus.notificado} icon={CircleCheck} />
@@ -83,7 +87,7 @@ function Tablero({ resumen }: { resumen: ResumenTablero }) {
         <KpiCard label="Paquetes abiertos" value={paquetes.abiertos} icon={Package} />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(280px,1fr)_2fr]">
+      <div className={TABLERO_GRID.graficas}>
         <DonutChart
           title="Notificaciones por estatus"
           totalLabel="Total"
@@ -102,7 +106,7 @@ function Tablero({ resumen }: { resumen: ResumenTablero }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_minmax(280px,1fr)]">
+      <div className={TABLERO_GRID.graficasPorAsignar}>
         <HorizontalBarChart
           title="Por asignar por método"
           description="Órdenes de cartas invitación listas para notificar"

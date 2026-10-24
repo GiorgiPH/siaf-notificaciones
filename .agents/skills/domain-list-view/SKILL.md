@@ -154,6 +154,21 @@ Referencia real y completa en el repo, cópiala como base:
 `src/features/notificaciones-campo/components/notificaciones-table.tsx` (el catálogo con todas las variantes está en
 `/showcase/tables` de `gob-design-2026`).
 
+La `Table` del DS no trae marco: va dentro del contenedor de la "Tabla completa"
+del catálogo, siempre con estas mismas clases (tokens del DS):
+
+```tsx
+<div className="w-full overflow-hidden rounded-2xl border border-border-low bg-bg-base shadow-sm">
+  <Table>…</Table>
+</div>
+```
+
+Todas las filas tienen su menú "…" con al menos una acción: si el registro ya no
+se puede editar por su estado, la acción es "Ver detalle" (ícono `Eye`) y abre
+el **mismo** modal en solo lectura — la columna de acciones nunca queda con
+texto suelto. El dato secundario de una celda (p. ej. el paquete de una
+notificación) va debajo del principal con `ds-body-sm text-content-low`.
+
 ```tsx
 <Table>
   <TableHeader>
@@ -192,11 +207,16 @@ Referencia real y completa en el repo, cópiala como base:
 
 - La acción destructiva confirma con `ConfirmDialog` (`variant="destructive"`)
   antes de llamar a su Server Action — ver `crud-form-modal` § "Cuándo NO es esta skill".
-- **Carga** → `loading.tsx` del segmento con `TableSkeleton` (`columns`,
-  `rows`, `headers`). No un spinner suelto.
+- **Carga** → `loading.tsx` del segmento con la misma forma de la pantalla:
+  `AppPageHeader` (el título en una constante compartida con la página), un
+  `Skeleton` por tab, los filtros y `TableSkeleton` (`columns`, `headers` desde
+  la misma constante de columnas que usa la tabla). No un spinner suelto: si el
+  header desaparece mientras carga, la pantalla brinca.
 - **Sin resultados** → `EmptyState` (`icon`, `title`, `description`, y
   `actionLabel`/`onAction` si tiene sentido crear el primero), nunca una tabla
-  vacía ni un `<p>` suelto.
+  vacía ni un `<p>` suelto. Con `total === 0` tampoco se pinta el paginador.
+  `EmptyState` es Client Component y su `icon` es una función: úsalo desde la
+  vista client; en un Server Component, un aviso va en `AlertBanner`.
 - **Error de la API** → `AlertBanner variant="error"` con `error.message`
   (el `ApiError` ya trae un mensaje seguro para UI), o deja que lo tome `error.tsx`.
 

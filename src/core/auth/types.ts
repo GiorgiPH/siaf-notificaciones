@@ -27,12 +27,20 @@ export interface ModuloMenu {
   readonly url: string;
 }
 
+/** Espejo de `SistemaSesionDTO`: el sistema (`DBA_C_SISTEMA`) que declaró el login. */
+export interface SistemaSesion {
+  readonly clave: string;
+  readonly nombre: string;
+}
+
 /** Espejo de `ConsultarPerfilResponseDTO` (`GET /auth/perfil`). */
 export interface PerfilResponse {
   readonly idUsuario: number;
   readonly usuario: string;
   readonly nombre: string;
   readonly roles: readonly string[];
+  readonly sistema: SistemaSesion;
+  /** Módulos del sistema de la sesión permitidos al usuario, en el orden del menú del sistema. */
   readonly menu: readonly ModuloMenu[];
 }
 

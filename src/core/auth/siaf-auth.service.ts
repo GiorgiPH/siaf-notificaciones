@@ -1,4 +1,5 @@
 import 'server-only';
+import { APP_SISTEMA } from '@/core/config/app';
 import { getServerEnv } from '@/core/config/env';
 import { ApiException } from '@/core/http/api-error';
 import { apiFetch } from '@/core/http/api-fetch';
@@ -33,10 +34,13 @@ export interface LoginCredentials {
   readonly password: string;
 }
 
-/** Inicia sesión en SIAF. Lanza `ApiException` (401 credenciales, 429 demasiados intentos, 400 datos). */
+/**
+ * Inicia sesión en el sistema de este portal (`APP_SISTEMA`). Lanza `ApiException`: 401 credenciales o sin acceso a
+ * este sistema (el mensaje del backend lo dice), 429 demasiados intentos, 400 datos.
+ */
 export async function loginSiaf(credentials: LoginCredentials, clientIp?: string): Promise<SiafSession> {
   const { data, headers } = await apiFetch<SesionResponse>(CLIENT, 'POST', AUTH_PATHS.login, {
-    body: credentials,
+    body: { ...credentials, sistema: APP_SISTEMA },
     clientIp,
   });
   const expiresAt = Date.now() + getServerEnv().SESSION_MAX_AGE_SECONDS * 1000;

@@ -23,11 +23,11 @@ interface DateRangePickerProps {
   className?: string;
 }
 
-/**
- * Filtro de rango de fechas para barras de filtros. Gap del DS: no existe DatePicker/DateRangePicker. Es una
- * composición del patrón "date picker" de shadcn con piezas del DS (`Popover` + `Calendar` en modo rango + `Button`),
- * sin estilos propios. Si el DS publica su componente, este archivo se reemplaza por el oficial.
- */
+// STOPGAP: falta DateRangePicker en el DS — no hay selector de rango de fechas para barras de filtros (ni diseño en
+// Figma ni componente en morelos-ds). Composición del patrón "date picker" de shadcn con piezas del DS (`Popover` +
+// `Calendar` en modo rango + `Button`), sin estilos propios. Cuando el DS publique el suyo, se reemplaza este archivo
+// conservando la API (`value`/`onValueChange` con fechas ISO) para no tocar las features que lo usan.
+/** Filtro de rango de fechas para barras de filtros. Fechas en ISO (`YYYY-MM-DD`), listas para la URL y la API. */
 export function DateRangePicker({ value, onValueChange, placeholder = 'Rango de fechas', className }: DateRangePickerProps) {
   const selected: DateRange | undefined = value.from
     ? { from: parseIsoDate(value.from), to: value.to ? parseIsoDate(value.to) : undefined }

@@ -1,18 +1,26 @@
+import { AppPageHeader } from '@/core/components/app-page-header';
 import { Skeleton } from '@/core/components/ui/skeleton';
+import { TABLERO_GRID, TABLERO_TITLE, TOTAL_KPIS } from '@/features/tablero/constants';
 
-const KPIS = 5;
-
+/** Misma estructura que el tablero (header, KPIs y dos filas de gráficas) para que la pantalla no brinque al cargar. */
 export default function InicioLoading() {
   return (
-    <div className="flex flex-col gap-8 p-8">
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
-        {Array.from({ length: KPIS }, (_, i) => (
-          <Skeleton key={i} className="h-28 rounded-xl" />
-        ))}
-      </div>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(280px,1fr)_2fr]">
-        <Skeleton className="h-80 rounded-xl" />
-        <Skeleton className="h-80 rounded-xl" />
+    <div className="flex min-h-full flex-col">
+      <AppPageHeader title={TABLERO_TITLE} />
+      <div className="flex flex-col gap-8 p-8">
+        <div className={TABLERO_GRID.kpis}>
+          {Array.from({ length: TOTAL_KPIS }, (_, i) => (
+            <Skeleton key={i} className="h-28 rounded-xl" />
+          ))}
+        </div>
+        <div className={TABLERO_GRID.graficas}>
+          <Skeleton className="h-80 rounded-2xl" />
+          <Skeleton className="h-80 rounded-2xl" />
+        </div>
+        <div className={TABLERO_GRID.graficasPorAsignar}>
+          <Skeleton className="h-80 rounded-2xl" />
+          <Skeleton className="h-80 rounded-2xl" />
+        </div>
       </div>
     </div>
   );

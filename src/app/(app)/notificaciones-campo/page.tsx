@@ -5,6 +5,7 @@ import { AppPageHeader } from '@/core/components/app-page-header';
 import { AlertBanner } from '@/core/components/ui/alert-banner';
 import { isApiException } from '@/core/http/api-error';
 import { NotificacionesListView } from '@/features/notificaciones-campo/components/notificaciones-list-view';
+import { NOTIFICACIONES_TITLE } from '@/features/notificaciones-campo/constants';
 import { notificacionesQuerySchema } from '@/features/notificaciones-campo/schemas';
 import {
   countNotificaciones,
@@ -14,7 +15,7 @@ import {
 } from '@/features/notificaciones-campo/services/notificaciones-campo.service';
 import type { NotificacionDetalle } from '@/features/notificaciones-campo/types';
 
-export const metadata: Metadata = { title: 'Notificaciones' };
+export const metadata: Metadata = { title: NOTIFICACIONES_TITLE };
 
 interface NotificacionesListPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -26,11 +27,11 @@ export default async function NotificacionesListPage({ searchParams }: Notificac
 
   let contenido: React.ReactNode;
   try {
-    const [resultado, conteos, prioridades, edicion] = await Promise.all([
+    const [resultado, conteos, prioridades, detalle] = await Promise.all([
       listNotificaciones(query),
       countNotificaciones(query),
       listPrioridades(),
-      query.editar ? leerEdicion(query.editar) : Promise.resolve(undefined),
+      query.notificacion ? leerDetalle(query.notificacion) : Promise.resolve(undefined),
     ]);
     contenido = (
       <NotificacionesListView
@@ -38,8 +39,8 @@ export default async function NotificacionesListPage({ searchParams }: Notificac
         resultado={resultado}
         conteos={conteos}
         prioridades={prioridades}
-        enEdicion={edicion?.detalle}
-        errorEdicion={edicion?.error}
+        abierta={detalle?.detalle}
+        errorDetalle={detalle?.error}
       />
     );
   } catch (err) {
@@ -49,14 +50,14 @@ export default async function NotificacionesListPage({ searchParams }: Notificac
 
   return (
     <div className="flex min-h-full flex-col">
-      <AppPageHeader title="Notificaciones" />
+      <AppPageHeader title={NOTIFICACIONES_TITLE} />
       <div className="flex flex-col gap-6 p-8">{contenido}</div>
     </div>
   );
 }
 
 /** La orden pudo salir de la bandeja entre que se listó y se abrió: se avisa sin tumbar el listado. */
-async function leerEdicion(idRevision: number): Promise<{ detalle?: NotificacionDetalle; error?: string }> {
+async function leerDetalle(idRevision: number): Promise<{ detalle?: NotificacionDetalle; error?: string }> {
   try {
     return { detalle: await getNotificacion(idRevision) };
   } catch (err) {

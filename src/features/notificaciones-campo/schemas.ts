@@ -14,7 +14,7 @@ export const ESTATUS_POR_DEFECTO: EstatusNotificacion = 'POR_ASIGNAR';
 const MAX_BUSQUEDA = 100;
 const MAX_DOMICILIO = 1000;
 
-/** Query params de la bandeja: búsqueda, rango de fecha del oficio, estatus, página y notificación en edición. */
+/** Query params de la bandeja: búsqueda, rango de fecha del oficio, estatus, página y notificación abierta. */
 export const notificacionesQuerySchema = paginationQuerySchema.extend({
   q: queryTextSchema(MAX_BUSQUEDA),
   desde: queryDateSchema,
@@ -22,8 +22,8 @@ export const notificacionesQuerySchema = paginationQuerySchema.extend({
   estatus: z
     .preprocess((v) => (Array.isArray(v) ? v[0] : v), z.union([estatusNotificacionSchema, z.literal(ESTATUS_TODOS)]))
     .catch(ESTATUS_POR_DEFECTO),
-  /** `idRevision` de la notificación abierta en el modal de edición. */
-  editar: z.preprocess((v) => (Array.isArray(v) ? v[0] : v), z.coerce.number().int().positive().optional()).catch(
+  /** `idRevision` de la notificación abierta en el modal (edición si está Por Asignar, si no, solo lectura). */
+  notificacion: z.preprocess((v) => (Array.isArray(v) ? v[0] : v), z.coerce.number().int().positive().optional()).catch(
     undefined,
   ),
 });
