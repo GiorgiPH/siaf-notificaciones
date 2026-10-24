@@ -1,0 +1,77 @@
+"use client"
+
+import * as React from "react"
+import { cn } from "@/core/lib/utils/cn"
+
+export interface FilterTabItem {
+  value: string
+  label: string
+  count?: number
+  icon?: React.ReactNode
+}
+
+interface FilterTabsProps {
+  value: string
+  onValueChange: (value: string) => void
+  items: FilterTabItem[]
+  sectionLabel?: string
+  className?: string
+  /** Distribuye las tabs ocupando todo el ancho disponible (flex-1 por tab) en vez de agruparlas a su tamaño natural. */
+  fullWidth?: boolean
+  /** Sobreescribe el color de la tab activa. */
+  activeClassName?: string
+  /** Sobreescribe el color del contador de la tab activa. */
+  activeCountClassName?: string
+}
+
+const DEFAULT_ACTIVE_TAB_CLASS = "bg-bg-base shadow-sm border-border-low text-[var(--color-core-bosque-30)]"
+const DEFAULT_ACTIVE_COUNT_CLASS = "bg-accent-primary text-white"
+
+export function FilterTabs({ value, onValueChange, items, sectionLabel, className, fullWidth, activeClassName, activeCountClassName }: FilterTabsProps) {
+  return (
+    <div
+      className={cn(
+        "inline-flex flex-wrap items-center gap-1 rounded-[24px] bg-bg-surface-low/60 p-1.5",
+        fullWidth ? "w-full" : "w-fit",
+        className
+      )}
+      role="tablist"
+      aria-label={sectionLabel ?? "Filtros"}
+    >
+      {items.map((item) => {
+        const isActive = value === item.value
+        return (
+          <button
+            key={item.value}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            aria-controls={`panel-${item.value}`}
+            id={`tab-${item.value}`}
+            onClick={() => onValueChange(item.value)}
+            className={cn(
+              "relative inline-flex items-center justify-center gap-1.5 rounded-[18px] border px-5 py-2 text-sm font-light transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-support-focus focus-visible:ring-offset-2",
+              fullWidth && "flex-1",
+              isActive
+                ? (activeClassName ?? DEFAULT_ACTIVE_TAB_CLASS)
+                : "border-transparent text-content-high hover:bg-black/5"
+            )}
+          >
+            {item.icon}
+            <span>{item.label}</span>
+            {item.count !== undefined && (
+              <span
+                className={cn(
+                  "ml-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] font-normal",
+                  isActive ? (activeCountClassName ?? DEFAULT_ACTIVE_COUNT_CLASS) : "bg-accent-primary text-white"
+                )}
+              >
+                {item.count}
+              </span>
+            )}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
