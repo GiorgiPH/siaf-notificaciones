@@ -66,6 +66,44 @@ export async function apiFetch<T>(
   return { data: (await res.json()) as ApiResponse<T>, headers: res.headers };
 }
 
+export interface ApiBinaryResult {
+  readonly body: ReadableStream<Uint8Array>;
+  readonly headers: Headers;
+}
+
+/**
+ * Como `apiFetch`, pero para respuestas binarias (p. ej. imágenes de soporte): devuelve el cuerpo en streaming sin
+ * leerlo a memoria. Los errores siguen llegando como `ApiResponseDTO` y se normalizan igual.
+ */
+export async function apiFetchBinary(
+  clientKey: ApiClientKey,
+  path: string,
+  opts: ApiFetchOptions = {},
+): Promise<ApiBinaryResult> {
+  const config = getApiClientConfig(clientKey);
+
+  let res: Response;
+  try {
+    res = await fetch(buildUrl(config.baseUrl, path, opts.query), {
+      method: 'GET',
+      headers: {
+        ...(opts.accessToken ? { Authorization: `Bearer ${opts.accessToken}` } : {}),
+        ...(opts.clientIp ? { 'X-Forwarded-For': opts.clientIp } : {}),
+        ...opts.headers,
+      },
+      signal: AbortSignal.timeout(config.timeoutMs),
+      cache: 'no-store',
+    });
+  } catch (err) {
+    throw new ApiException(apiErrorFromThrown(err));
+  }
+
+  if (!res.ok || !res.body) {
+    throw new ApiException(await apiErrorFromResponse(res));
+  }
+  return { body: res.body, headers: res.headers };
+}
+
 function buildUrl(baseUrl: string, path: string, query?: ApiQueryParams): string {
   const url = new URL(`${baseUrl.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`);
   for (const [key, value] of Object.entries(query ?? {})) {

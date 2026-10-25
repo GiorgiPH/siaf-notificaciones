@@ -1,23 +1,10 @@
-import type { VariantProps } from 'class-variance-authority';
-import type { badgeVariants } from '@/core/components/ui/badge';
-import { ESTATUS_TODOS, type EstatusNotificacion } from './schemas';
-import type { ConteoNotificaciones, EstadoPaquete } from './types';
-
-type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>['variant']>;
-
-export const ESTATUS_LABEL: Record<EstatusNotificacion, string> = {
-  POR_ASIGNAR: 'Por Asignar',
-  POR_NOTIFICAR: 'Por Notificar',
-  NOTIFICADO: 'Notificado',
-  NO_ENTREGADO: 'No entregado',
-};
-
-export const ESTATUS_BADGE: Record<EstatusNotificacion, BadgeVariant> = {
-  POR_ASIGNAR: 'info',
-  POR_NOTIFICAR: 'warning',
-  NOTIFICADO: 'success',
-  NO_ENTREGADO: 'rose',
-};
+import {
+  ESTATUS_NOTIFICACION_LABEL,
+  type BadgeVariant,
+  type EstatusNotificacion,
+} from '@/core/lib/domain/notificaciones';
+import { ESTATUS_TODOS } from './schemas';
+import type { ConteoNotificaciones } from './types';
 
 /** La fecha del resultado es la de la notificación si se entregó y la de la visita si no (PRD 6.3, detalle). */
 export const ETIQUETA_FECHA_RESULTADO: Record<EstatusNotificacion, string> = {
@@ -27,28 +14,16 @@ export const ETIQUETA_FECHA_RESULTADO: Record<EstatusNotificacion, string> = {
   NO_ENTREGADO: 'Fecha y hora de visita',
 };
 
-export const PAQUETE_ESTADO_LABEL: Record<EstadoPaquete, string> = {
-  PROGRAMADO: 'Programado',
-  ABIERTO: 'Abierto',
-  CERRADO: 'Cerrado',
-};
-
-export const PAQUETE_ESTADO_BADGE: Record<EstadoPaquete, BadgeVariant> = {
-  PROGRAMADO: 'slate',
-  ABIERTO: 'warning',
-  CERRADO: 'success',
-};
-
 /** Tabs del filtro de estatus, en el orden del flujo (PRD 12.3), con el campo de `ConteoNotificaciones` de su contador. */
 export const ESTATUS_TABS: ReadonlyArray<{
   value: EstatusNotificacion | typeof ESTATUS_TODOS;
   label: string;
   conteo: keyof ConteoNotificaciones;
 }> = [
-  { value: 'POR_ASIGNAR', label: ESTATUS_LABEL.POR_ASIGNAR, conteo: 'porAsignar' },
-  { value: 'POR_NOTIFICAR', label: ESTATUS_LABEL.POR_NOTIFICAR, conteo: 'porNotificar' },
-  { value: 'NOTIFICADO', label: ESTATUS_LABEL.NOTIFICADO, conteo: 'notificado' },
-  { value: 'NO_ENTREGADO', label: ESTATUS_LABEL.NO_ENTREGADO, conteo: 'noEntregado' },
+  { value: 'POR_ASIGNAR', label: ESTATUS_NOTIFICACION_LABEL.POR_ASIGNAR, conteo: 'porAsignar' },
+  { value: 'POR_NOTIFICAR', label: ESTATUS_NOTIFICACION_LABEL.POR_NOTIFICAR, conteo: 'porNotificar' },
+  { value: 'NOTIFICADO', label: ESTATUS_NOTIFICACION_LABEL.NOTIFICADO, conteo: 'notificado' },
+  { value: 'NO_ENTREGADO', label: ESTATUS_NOTIFICACION_LABEL.NO_ENTREGADO, conteo: 'noEntregado' },
   { value: ESTATUS_TODOS, label: 'Todas', conteo: 'total' },
 ];
 

@@ -1,4 +1,4 @@
-import type { EstatusNotificacion } from './schemas';
+import type { EstadoPaquete, EstatusNotificacion } from '@/core/lib/domain/notificaciones';
 
 /** Nivel de prioridad (catálogo del backend; A, B y C, con C por defecto). */
 export interface Prioridad {
@@ -27,9 +27,6 @@ export interface NotificacionFila {
   /** Fecha y hora del resultado (`LocalDateTime` ISO); nula sin resultado. */
   readonly fechaResultado: string | null;
 }
-
-/** Estados del paquete (`DBA_M_PAQUETE_NOTIF.ESTADO`, PRD 12.2). */
-export type EstadoPaquete = 'PROGRAMADO' | 'ABIERTO' | 'CERRADO';
 
 /** Paquete de una notificación (`PaqueteNotificacionDTO`); su `id` es el consecutivo del paquete (PRD 10). */
 export interface PaqueteNotificacion {

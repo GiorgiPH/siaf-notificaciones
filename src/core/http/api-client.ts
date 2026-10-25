@@ -3,11 +3,11 @@ import { headers as requestHeaders } from 'next/headers';
 import { getSession } from '@/core/auth/session';
 import { getApiClientConfig, type ApiAuthStrategy, type ApiClientKey } from './api-client.config';
 import { ApiException, apiErrorFromKind } from './api-error';
-import { apiFetch, type ApiRequestOptions, type HttpMethod } from './api-fetch';
+import { apiFetch, apiFetchBinary, type ApiBinaryResult, type ApiRequestOptions, type HttpMethod } from './api-fetch';
 import { getClientIp } from './client-ip';
 import type { ApiResponse } from './types';
 
-export type { ApiQueryParams, ApiRequestOptions } from './api-fetch';
+export type { ApiBinaryResult, ApiQueryParams, ApiRequestOptions } from './api-fetch';
 
 /**
  * Punto único de acceso HTTP a las APIs de negocio. Ninguna feature llama
@@ -36,6 +36,12 @@ export function apiClient(clientKey: ApiClientKey) {
       send<T>('PATCH', path, body, opts),
     delete: <T>(path: string, opts?: ApiRequestOptions): Promise<ApiResponse<T>> =>
       send<T>('DELETE', path, undefined, opts),
+    /** Archivo binario en streaming (p. ej. imagen de soporte); solo para route handlers que lo reenvían. */
+    getBinary: async (path: string, opts?: ApiRequestOptions): Promise<ApiBinaryResult> => {
+      const { authStrategy } = getApiClientConfig(clientKey);
+      const [accessToken, clientIp] = await Promise.all([resolveAccessToken(authStrategy), resolveClientIp()]);
+      return apiFetchBinary(clientKey, path, { ...opts, accessToken, clientIp });
+    },
   };
 }
 

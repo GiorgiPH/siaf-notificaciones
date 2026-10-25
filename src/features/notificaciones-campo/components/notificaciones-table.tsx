@@ -10,8 +10,9 @@ import {
   DropdownMenuTrigger,
 } from '@/core/components/ui/dropdown-menu';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/core/components/ui/table';
+import { ESTATUS_NOTIFICACION_BADGE, ESTATUS_NOTIFICACION_LABEL } from '@/core/lib/domain/notificaciones';
 import { formatDate, formatDateTime } from '@/core/lib/utils/format';
-import { COLUMNAS_BANDEJA, ESTATUS_BADGE, ESTATUS_EDITABLE, ESTATUS_LABEL, prioridadBadge } from '../constants';
+import { COLUMNAS_BANDEJA, ESTATUS_EDITABLE, prioridadBadge } from '../constants';
 import type { NotificacionFila } from '../types';
 
 interface NotificacionesTableProps {
@@ -69,7 +70,9 @@ export function NotificacionesTable({ items, onOpen }: NotificacionesTableProps)
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col items-start gap-1">
-                    <Badge variant={ESTATUS_BADGE[fila.estatus]}>{ESTATUS_LABEL[fila.estatus]}</Badge>
+                    <Badge variant={ESTATUS_NOTIFICACION_BADGE[fila.estatus]}>
+                      {ESTATUS_NOTIFICACION_LABEL[fila.estatus]}
+                    </Badge>
                     {fila.fechaResultado && (
                       <span className="ds-body-sm text-content-low">{formatDateTime(fila.fechaResultado)}</span>
                     )}

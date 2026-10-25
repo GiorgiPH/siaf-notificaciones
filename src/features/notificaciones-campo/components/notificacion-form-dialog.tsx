@@ -17,13 +17,18 @@ import {
 import { Field } from '@/core/components/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/core/components/ui/select';
 import { Textarea } from '@/core/components/ui/textarea';
+import { DatosLista, type DatoLista } from '@/core/components/datos-lista';
 import type { ActionState } from '@/core/lib/action-state';
+import {
+  ESTATUS_NOTIFICACION_LABEL,
+  PAQUETE_ESTADO_BADGE,
+  PAQUETE_ESTADO_LABEL,
+  type EstatusNotificacion,
+} from '@/core/lib/domain/notificaciones';
 import { formatCurrency, formatDate, formatDateTime } from '@/core/lib/utils/format';
 import { editarNotificacionAction } from '../actions';
-import { ESTATUS_LABEL, ETIQUETA_FECHA_RESULTADO, PAQUETE_ESTADO_BADGE, PAQUETE_ESTADO_LABEL } from '../constants';
-import type { EstatusNotificacion } from '../schemas';
+import { ETIQUETA_FECHA_RESULTADO } from '../constants';
 import type { NotificacionDetalle, Prioridad, SeguimientoNotificacion } from '../types';
-import { DatosLista, type DatoLista } from './datos-lista';
 
 const SIN_DATO = '—';
 
@@ -105,7 +110,7 @@ export function NotificacionFormDialog({ open, onOpenChange, notificacion, prior
             <div className="flex flex-col gap-6">
               {soloLectura && (
                 <AlertBanner variant="info">
-                  La notificación está {ESTATUS_LABEL[notificacion.estatus]}: sus datos ya no se pueden modificar.
+                  La notificación está {ESTATUS_NOTIFICACION_LABEL[notificacion.estatus]}: sus datos ya no se pueden modificar.
                 </AlertBanner>
               )}
               <DatosLista titulo="Datos de la orden" datos={datosOrden} />

@@ -12,7 +12,7 @@ interface DatosListaProps {
   datos: readonly DatoLista[];
 }
 
-/** Datos de solo lectura en pares etiqueta/valor dentro de un `Card` del DS (detalle de la notificación). */
+/** Datos de solo lectura en pares etiqueta/valor dentro de un `Card` del DS (detalle de la notificación y del paquete). */
 export function DatosLista({ titulo, datos }: DatosListaProps) {
   return (
     <section className="flex flex-col gap-2">

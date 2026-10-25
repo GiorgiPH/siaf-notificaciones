@@ -1,10 +1,8 @@
 import { z } from 'zod';
+import { ESTATUS_NOTIFICACION, type EstatusNotificacion } from '@/core/lib/domain/notificaciones';
 import { paginationQuerySchema, queryDateSchema, queryTextSchema } from '@/core/lib/schemas/query';
 
-/** Únicos estados de una notificación (PRD 12.1). */
-export const ESTATUS_NOTIFICACION = ['POR_ASIGNAR', 'POR_NOTIFICAR', 'NOTIFICADO', 'NO_ENTREGADO'] as const;
 export const estatusNotificacionSchema = z.enum(ESTATUS_NOTIFICACION);
-export type EstatusNotificacion = z.infer<typeof estatusNotificacionSchema>;
 
 /** Valor del filtro de estatus que no filtra. */
 export const ESTATUS_TODOS = 'TODOS';
