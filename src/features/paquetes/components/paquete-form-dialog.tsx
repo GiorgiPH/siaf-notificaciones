@@ -87,7 +87,12 @@ export function PaqueteFormDialog({ open, onOpenChange, notificadores, paquete }
                     required
                   />
                 </Field>
-                <Field label="Notificador*" htmlFor="idNotificador" error={state.fieldErrors?.idNotificador}>
+                <Field
+                  label="Notificador*"
+                  htmlFor="idNotificador"
+                  error={state.fieldErrors?.idNotificador}
+                  description="Solo aparecen los notificadores con correo registrado: ahí reciben el aviso del paquete."
+                >
                   <Select name="idNotificador" value={idNotificador} onValueChange={setIdNotificador}>
                     <SelectTrigger id="idNotificador" className="w-full">
                       <SelectValue placeholder="Selecciona" />

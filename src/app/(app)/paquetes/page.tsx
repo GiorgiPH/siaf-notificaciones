@@ -8,6 +8,7 @@ import { PaquetesListView } from '@/features/paquetes/components/paquetes-list-v
 import { PAQUETES_TITLE } from '@/features/paquetes/constants';
 import { paquetesQuerySchema } from '@/features/paquetes/schemas';
 import {
+  countPaquetes,
   getPaqueteById,
   listNotificadores,
   listPaquetes,
@@ -28,8 +29,9 @@ export default async function PaquetesListPage({ searchParams }: PaquetesListPag
 
   let contenido: React.ReactNode;
   try {
-    const [resultado, notificadores, detalle, edicion] = await Promise.all([
+    const [resultado, conteos, notificadores, detalle, edicion] = await Promise.all([
       listPaquetes(query),
+      countPaquetes(query),
       listNotificadores(),
       idDetalle ? leer(() => leerDetalle(idDetalle)) : Promise.resolve(undefined),
       idEdicion ? leer(() => getPaqueteById(idEdicion)) : Promise.resolve(undefined),
@@ -39,6 +41,7 @@ export default async function PaquetesListPage({ searchParams }: PaquetesListPag
       <PaquetesListView
         query={query}
         resultado={resultado}
+        conteos={conteos}
         notificadores={notificadores}
         detalle={detalle?.valor}
         edicion={editable ? edicion?.valor : undefined}

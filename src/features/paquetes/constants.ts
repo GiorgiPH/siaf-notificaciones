@@ -1,5 +1,6 @@
-import { ESTADOS_PAQUETE, PAQUETE_ESTADO_LABEL, type EstadoPaquete } from '@/core/lib/domain/notificaciones';
+import type { EstadoPaquete } from '@/core/lib/domain/notificaciones';
 import { ESTADO_TODOS } from './schemas';
+import type { ConteoPaquetes } from './types';
 
 /** Título de la pantalla: lo comparten la página, su `loading.tsx` y la metadata. */
 export const PAQUETES_TITLE = 'Paquetes';
@@ -13,10 +14,19 @@ export const COLUMNAS_BANDEJA = ['Paquete', 'Notificador', 'Fechas', 'Num. Órde
  */
 export const COLUMNAS_DETALLE = ['Num. Orden', 'Fecha Oficio', 'Domicilio', 'Estatus', 'Soportes'] as const;
 
-/** Tabs de estado del paquete (PRD 12.2). */
-export const ESTADO_TABS: ReadonlyArray<{ value: EstadoPaquete | typeof ESTADO_TODOS; label: string }> = [
-  { value: ESTADO_TODOS, label: 'Todos' },
-  ...ESTADOS_PAQUETE.map((estado) => ({ value: estado, label: PAQUETE_ESTADO_LABEL[estado] })),
+/**
+ * Filtro "Tipo de operación" de la bandeja (PRD 7.2), confirmado por el área: el estado del paquete (PRD 12.2), con el
+ * campo de `ConteoPaquetes` de su contador.
+ */
+export const ESTADO_TABS: ReadonlyArray<{
+  value: EstadoPaquete | typeof ESTADO_TODOS;
+  label: string;
+  conteo: keyof ConteoPaquetes;
+}> = [
+  { value: ESTADO_TODOS, label: 'Todos', conteo: 'total' },
+  { value: 'PROGRAMADO', label: 'Programados', conteo: 'programado' },
+  { value: 'ABIERTO', label: 'Abiertos', conteo: 'abierto' },
+  { value: 'CERRADO', label: 'Cerrados', conteo: 'cerrado' },
 ];
 
 /** Parámetros de la URL que abren el detalle y la edición (deben coincidir con `paquetesQuerySchema`). */

@@ -16,8 +16,8 @@ const queryIdSchema = z.preprocess(firstValue, z.coerce.number().int().positive(
 
 /**
  * Query params de la bandeja (PRD 7.2): búsqueda por ID u orden/oficio, rangos de fecha programada, de apertura y de
- * cierre, notificador, estado y página; `paquete` abre el detalle y `editar` la edición. ⚠️ El filtro "Tipo fecha
- * operación" no se incluye hasta que el área confirme sus valores (PRD 17).
+ * cierre, notificador, tipo de operación (`estado`: Todos, Programados, Abiertos, Cerrados) y página; `paquete` abre el
+ * detalle y `editar` la edición.
  */
 export const paquetesQuerySchema = paginationQuerySchema.extend({
   q: queryTextSchema(MAX_BUSQUEDA),
@@ -43,7 +43,7 @@ export type PaquetesQuery = z.infer<typeof paquetesQuerySchema>;
 
 /**
  * Alta o edición del paquete (PRD 7.1): `id` presente = edición. Las órdenes llegan como varios `idsRevision` del
- * `FormData`. El máximo de notificaciones lo valida el backend (`app.paquetes.max-notificaciones`).
+ * `FormData`. El máximo de 50 notificaciones lo valida el backend (`app.paquetes.max-notificaciones`).
  */
 export const guardarPaqueteSchema = z.object({
   id: z.preprocess((v) => (v === '' ? undefined : v), z.coerce.number().int().positive().optional()),

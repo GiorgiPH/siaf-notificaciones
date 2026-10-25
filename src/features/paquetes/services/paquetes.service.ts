@@ -5,6 +5,7 @@ import { toPaginaRequest } from '@/core/lib/schemas/query';
 import { DISPONIBLES_POR_BUSQUEDA } from '../constants';
 import { ESTADO_TODOS, type GuardarPaqueteInput, type IniciarPaqueteInput, type PaquetesQuery } from '../schemas';
 import type {
+  ConteoPaquetes,
   NotificacionDisponible,
   Notificador,
   PaginaDisponibles,
@@ -17,6 +18,7 @@ import type {
 /** Endpoints del módulo en SIAF-Backend: cuelgan de su URL base (`DBA_C_MODULOS.URL`). */
 const API = {
   buscar: `${PAQUETES_PATH}/buscarPaquetes`,
+  contar: `${PAQUETES_PATH}/contarPaquetes`,
   consultar: (idPaquete: number) => `${PAQUETES_PATH}/consultarPaquete/${idPaquete}`,
   notificadores: `${PAQUETES_PATH}/listarNotificadores`,
   disponibles: `${PAQUETES_PATH}/buscarDisponibles`,
@@ -27,9 +29,9 @@ const API = {
   soporte: (idSoporte: number) => `${PAQUETES_PATH}/descargarSoporte/${idSoporte}`,
 } as const;
 
-/** Bandeja paginada con los filtros de la URL (PRD 7.2). */
-export async function listPaquetes(query: PaquetesQuery): Promise<PaginaPaquetes> {
-  const { data, count } = await apiClient('institutional').post<PaqueteFila[]>(API.buscar, {
+/** Filtros de la URL comunes a la búsqueda y a los contadores (todo menos el estado y la página). */
+function filtros(query: PaquetesQuery) {
+  return {
     texto: query.q,
     fechaProgramadaDesde: query.programadaDesde,
     fechaProgramadaHasta: query.programadaHasta,
@@ -38,10 +40,23 @@ export async function listPaquetes(query: PaquetesQuery): Promise<PaginaPaquetes
     fechaCierreDesde: query.cierreDesde,
     fechaCierreHasta: query.cierreHasta,
     idNotificador: query.notificador,
+  };
+}
+
+/** Bandeja paginada con los filtros de la URL (PRD 7.2). */
+export async function listPaquetes(query: PaquetesQuery): Promise<PaginaPaquetes> {
+  const { data, count } = await apiClient('institutional').post<PaqueteFila[]>(API.buscar, {
+    ...filtros(query),
     estado: query.estado === ESTADO_TODOS ? undefined : query.estado,
     pagina: toPaginaRequest(query),
   });
   return { items: data, total: count ?? data.length };
+}
+
+/** Contadores de las pestañas "Tipo de operación": mismos filtros que la bandeja, sin el estado. */
+export async function countPaquetes(query: PaquetesQuery): Promise<ConteoPaquetes> {
+  const { data } = await apiClient('institutional').post<ConteoPaquetes>(API.contar, filtros(query));
+  return data;
 }
 
 /** Detalle con sus notificaciones (PRD 7.3). */

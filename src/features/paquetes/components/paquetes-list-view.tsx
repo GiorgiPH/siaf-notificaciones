@@ -14,7 +14,14 @@ import { formatDate } from '@/core/lib/utils/format';
 import { iniciarPaqueteAction } from '../actions';
 import { DETALLE_PARAM, EDITAR_PARAM, ESTADO_TABS, VISTA_PARAM } from '../constants';
 import type { PaquetesQuery } from '../schemas';
-import type { Notificador, PaginaPaquetes, PaqueteDetalle, PaqueteFila, SoportePaquete } from '../types';
+import type {
+  ConteoPaquetes,
+  Notificador,
+  PaginaPaquetes,
+  PaqueteDetalle,
+  PaqueteFila,
+  SoportePaquete,
+} from '../types';
 import { PaqueteDetalleDialog } from './paquete-detalle-dialog';
 import { PaqueteFormDialog } from './paquete-form-dialog';
 import { PaquetesFilters } from './paquetes-filters';
@@ -23,6 +30,8 @@ import { PaquetesTable } from './paquetes-table';
 interface PaquetesListViewProps {
   query: PaquetesQuery;
   resultado: PaginaPaquetes;
+  /** Contadores de las pestañas, del backend con los mismos filtros (sin el estado). */
+  conteos: ConteoPaquetes;
   notificadores: readonly Notificador[];
   /** Paquete abierto en el detalle (`?paquete=<id>`), con sus soportes, leído en el servidor. */
   detalle?: { paquete: PaqueteDetalle; soportes: readonly SoportePaquete[] };
@@ -39,6 +48,7 @@ interface PaquetesListViewProps {
 export function PaquetesListView({
   query,
   resultado,
+  conteos,
   notificadores,
   detalle,
   edicion,
@@ -77,10 +87,10 @@ export function PaquetesListView({
   return (
     <div className="flex flex-col gap-6">
       <FilterTabs
-        items={ESTADO_TABS.map(({ value, label }) => ({ value, label }))}
+        items={ESTADO_TABS.map(({ value, label, conteo }) => ({ value, label, count: conteos[conteo] }))}
         value={query.estado}
         onValueChange={(estado) => setParams({ estado })}
-        sectionLabel="Estado del paquete"
+        sectionLabel="Tipo de operación"
       />
 
       <div className="flex flex-wrap items-center justify-between gap-4">

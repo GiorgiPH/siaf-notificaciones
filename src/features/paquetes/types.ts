@@ -83,6 +83,14 @@ export interface SoportePaquete {
   readonly fechaAlta: string;
 }
 
+/** Contadores de las pestañas "Tipo de operación" con los filtros de la búsqueda (`ContarPaquetesResponseDTO`). */
+export interface ConteoPaquetes {
+  readonly programado: number;
+  readonly abierto: number;
+  readonly cerrado: number;
+  readonly total: number;
+}
+
 export interface PaginaPaquetes {
   readonly items: readonly PaqueteFila[];
   readonly total: number;
