@@ -10,24 +10,23 @@ const HEADERS_REENVIADOS = ['content-type', 'content-length', 'content-dispositi
 const STATUS_SIN_RESPUESTA = 502;
 
 /**
- * Sirve en streaming un archivo del backend (imagen de soporte, PDF de un reporte) desde un route handler propio: el
- * navegador nunca lo pide a la API. Verifica sesión y rol, valida el id de la ruta, reenvía tipo, tamaño y
- * `Content-Disposition` (en línea o adjunto, lo decide el backend) y no deja copia en cachés compartidas.
+ * Sirve en streaming un archivo del backend (imagen de soporte, PDF o Excel de un reporte) desde un route handler
+ * propio: el navegador nunca lo pide a la API. Verifica sesión y rol, reenvía tipo, tamaño y `Content-Disposition` (en
+ * línea o adjunto, lo decide el backend) y no deja copia en cachés compartidas. `obtener` solo corre con sesión y rol
+ * válidos; si devuelve `null`, la petición era inválida (400).
  */
-export async function proxyBinario(
-  idRuta: string,
+export async function responderBinario(
   roles: readonly string[],
-  obtener: (id: number) => Promise<ApiBinaryResult>,
+  obtener: () => Promise<ApiBinaryResult> | null,
 ): Promise<Response> {
   const session = await getSession();
   if (!session) return new Response(null, { status: 401 });
   if (!hasAnyRole(session.user, roles)) return new Response(null, { status: 403 });
 
-  const id = Number(idRuta);
-  if (!Number.isInteger(id) || id <= 0) return new Response(null, { status: 400 });
-
   try {
-    const { body, headers } = await obtener(id);
+    const pendiente = obtener();
+    if (!pendiente) return new Response(null, { status: 400 });
+    const { body, headers } = await pendiente;
     const respuesta = new Headers({ 'Cache-Control': 'private, no-store' });
     for (const nombre of HEADERS_REENVIADOS) {
       const valor = headers.get(nombre);
@@ -38,4 +37,14 @@ export async function proxyBinario(
     if (isApiException(err)) return new Response(null, { status: err.error.status ?? STATUS_SIN_RESPUESTA });
     throw err;
   }
+}
+
+/** Igual que `responderBinario` para un archivo identificado por el id de la ruta (entero positivo; si no, 400). */
+export function proxyBinario(
+  idRuta: string,
+  roles: readonly string[],
+  obtener: (id: number) => Promise<ApiBinaryResult>,
+): Promise<Response> {
+  const id = Number(idRuta);
+  return responderBinario(roles, () => (Number.isInteger(id) && id > 0 ? obtener(id) : null));
 }

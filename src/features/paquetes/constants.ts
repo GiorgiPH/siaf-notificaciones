@@ -1,5 +1,5 @@
 import type { EstadoPaquete } from '@/core/lib/domain/notificaciones';
-import { ESTADO_TODOS } from './schemas';
+import { ESTADO_TODOS, type FormatoInforme, type PaquetesQuery } from './schemas';
 import type { ConteoPaquetes } from './types';
 
 /** Título de la pantalla: lo comparten la página, su `loading.tsx` y la metadata. */
@@ -49,3 +49,32 @@ export const soporteUrl = (idSoporte: number) => `/paquetes/soportes/${idSoporte
 export const fichaUrl = (idPaquete: number) => `/paquetes/fichas/${idPaquete}`;
 /** Texto de la acción, igual que en el aplicativo legado (PRD 7.3). */
 export const IMP_FICHA_LABEL = 'Imp. Ficha';
+
+/** Informe general de notificaciones (PRD 7.2, antes "Inf. Num. Órdenes Gral."): botón y opciones de formato. */
+export const INFORME_LABEL = 'Informe de notificaciones';
+export const INFORME_FORMATOS: ReadonlyArray<{ value: FormatoInforme; label: string }> = [
+  { value: 'PDF', label: 'PDF' },
+  { value: 'XLSX', label: 'Excel' },
+];
+/** Parámetros de la URL de la bandeja que son filtros (el informe ignora página, detalle y edición). */
+const FILTROS_INFORME = [
+  'q',
+  'programadaDesde',
+  'programadaHasta',
+  'aperturaDesde',
+  'aperturaHasta',
+  'cierreDesde',
+  'cierreHasta',
+  'notificador',
+  'estado',
+] as const satisfies ReadonlyArray<keyof PaquetesQuery>;
+
+/** Ruta del route handler que descarga el informe con los filtros vigentes de la bandeja. */
+export function informeUrl(query: PaquetesQuery, formato: FormatoInforme): string {
+  const params = new URLSearchParams({ formato });
+  for (const clave of FILTROS_INFORME) {
+    const valor = query[clave];
+    if (valor !== undefined && valor !== '') params.set(clave, String(valor));
+  }
+  return `/paquetes/informe?${params.toString()}`;
+}

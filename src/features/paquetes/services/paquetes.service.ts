@@ -3,7 +3,13 @@ import { PAQUETES_PATH } from '@/core/auth/routes';
 import { apiClient, type ApiBinaryResult } from '@/core/http/api-client';
 import { toPaginaRequest } from '@/core/lib/schemas/query';
 import { DISPONIBLES_POR_BUSQUEDA } from '../constants';
-import { ESTADO_TODOS, type GuardarPaqueteInput, type IniciarPaqueteInput, type PaquetesQuery } from '../schemas';
+import {
+  ESTADO_TODOS,
+  type FormatoInforme,
+  type GuardarPaqueteInput,
+  type IniciarPaqueteInput,
+  type PaquetesQuery,
+} from '../schemas';
 import type {
   ConteoPaquetes,
   NotificacionDisponible,
@@ -28,6 +34,7 @@ const API = {
   soportes: (idPaquete: number) => `${PAQUETES_PATH}/listarSoportes/${idPaquete}`,
   soporte: (idSoporte: number) => `${PAQUETES_PATH}/descargarSoporte/${idSoporte}`,
   ficha: (idPaquete: number) => `${PAQUETES_PATH}/generarFichaPaquete/${idPaquete}`,
+  informe: `${PAQUETES_PATH}/generarReporteNotificaciones`,
 } as const;
 
 /** Filtros de la URL comunes a la búsqueda y a los contadores (todo menos el estado y la página). */
@@ -109,6 +116,18 @@ export async function listSoportes(idPaquete: number): Promise<readonly SoporteP
 /** Imagen de un soporte en streaming; solo la usa el route handler `paquetes/soportes/[idSoporte]`. */
 export async function getSoporteStream(idSoporte: number): Promise<ApiBinaryResult> {
   return apiClient('institutional').getBinary(API.soporte(idSoporte));
+}
+
+/**
+ * Informe general de notificaciones (PDF o Excel, adjunto) con los filtros vigentes de la bandeja, sin paginación;
+ * solo lo usa el route handler `paquetes/informe`.
+ */
+export async function getInformeStream(query: PaquetesQuery, formato: FormatoInforme): Promise<ApiBinaryResult> {
+  return apiClient('institutional').postBinary(API.informe, {
+    ...filtros(query),
+    estado: query.estado === ESTADO_TODOS ? undefined : query.estado,
+    formato,
+  });
 }
 
 /** PDF de la ficha del paquete (adjunto); solo lo usa el route handler `paquetes/fichas/[idPaquete]`. */

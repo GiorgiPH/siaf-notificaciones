@@ -1,18 +1,32 @@
 'use client';
 
 import { useCallback, useState, useTransition } from 'react';
-import { Package, Plus } from 'lucide-react';
+import { ChevronDown, FileText, Package, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { AlertBanner } from '@/core/components/ui/alert-banner';
 import { Button } from '@/core/components/ui/button';
 import { ConfirmDialog } from '@/core/components/ui/confirm-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/core/components/ui/dropdown-menu';
 import { EmptyState } from '@/core/components/ui/empty-state';
 import { FilterTabs } from '@/core/components/ui/filter-tabs';
 import { PaginationControls } from '@/core/components/ui/pagination-controls';
 import { useQueryParams } from '@/core/lib/hooks/use-query-params';
 import { formatDate } from '@/core/lib/utils/format';
 import { iniciarPaqueteAction } from '../actions';
-import { DETALLE_PARAM, EDITAR_PARAM, ESTADO_TABS, VISTA_PARAM } from '../constants';
+import {
+  DETALLE_PARAM,
+  EDITAR_PARAM,
+  ESTADO_TABS,
+  INFORME_FORMATOS,
+  INFORME_LABEL,
+  informeUrl,
+  VISTA_PARAM,
+} from '../constants';
 import type { PaquetesQuery } from '../schemas';
 import type {
   ConteoPaquetes,
@@ -43,7 +57,8 @@ interface PaquetesListViewProps {
 
 /**
  * Bandeja de paquetes (PRD 7.2): estado, filtros, alta (PRD 7.1), detalle y soportes (7.3), edición e inicio solo en
- * Programado (7.5), "Imp. Ficha" en cualquier estado. "Inf. Num. Órdenes Gral." está fuera de alcance (SOW 3.3).
+ * Programado (7.5), "Imp. Ficha" en cualquier estado e "Informe de notificaciones" (antes "Inf. Num. Órdenes Gral.")
+ * en PDF o Excel con los filtros vigentes.
  */
 export function PaquetesListView({
   query,
@@ -95,10 +110,30 @@ export function PaquetesListView({
 
       <div className="flex flex-wrap items-center justify-between gap-4">
         <PaquetesFilters query={query} notificadores={notificadores} onChange={setParams} />
-        <Button onClick={() => setCreando(true)}>
-          <Plus />
-          Nuevo paquete
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" disabled={resultado.total === 0}>
+                <FileText />
+                {INFORME_LABEL}
+                <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {INFORME_FORMATOS.map(({ value, label }) => (
+                <DropdownMenuItem key={value} asChild>
+                  <a href={informeUrl(query, value)} download>
+                    {label}
+                  </a>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button onClick={() => setCreando(true)}>
+            <Plus />
+            Nuevo paquete
+          </Button>
+        </div>
       </div>
 
       {errorAbierto && (

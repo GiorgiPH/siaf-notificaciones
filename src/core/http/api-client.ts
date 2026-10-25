@@ -37,12 +37,23 @@ export function apiClient(clientKey: ApiClientKey) {
     delete: <T>(path: string, opts?: ApiRequestOptions): Promise<ApiResponse<T>> =>
       send<T>('DELETE', path, undefined, opts),
     /** Archivo binario en streaming (p. ej. imagen de soporte); solo para route handlers que lo reenvían. */
-    getBinary: async (path: string, opts?: ApiRequestOptions): Promise<ApiBinaryResult> => {
-      const { authStrategy } = getApiClientConfig(clientKey);
-      const [accessToken, clientIp] = await Promise.all([resolveAccessToken(authStrategy), resolveClientIp()]);
-      return apiFetchBinary(clientKey, path, { ...opts, accessToken, clientIp });
-    },
+    getBinary: (path: string, opts?: ApiRequestOptions): Promise<ApiBinaryResult> =>
+      sendBinary(clientKey, path, undefined, opts),
+    /** Archivo binario generado con un cuerpo JSON (p. ej. reporte con filtros); solo para route handlers. */
+    postBinary: (path: string, body: unknown, opts?: ApiRequestOptions): Promise<ApiBinaryResult> =>
+      sendBinary(clientKey, path, body, opts),
   };
+}
+
+async function sendBinary(
+  clientKey: ApiClientKey,
+  path: string,
+  body: unknown,
+  opts?: ApiRequestOptions,
+): Promise<ApiBinaryResult> {
+  const { authStrategy } = getApiClientConfig(clientKey);
+  const [accessToken, clientIp] = await Promise.all([resolveAccessToken(authStrategy), resolveClientIp()]);
+  return apiFetchBinary(clientKey, path, { ...opts, body, accessToken, clientIp });
 }
 
 async function resolveAccessToken(strategy: ApiAuthStrategy): Promise<string | undefined> {

@@ -72,8 +72,9 @@ export interface ApiBinaryResult {
 }
 
 /**
- * Como `apiFetch`, pero para respuestas binarias (p. ej. imágenes de soporte): devuelve el cuerpo en streaming sin
- * leerlo a memoria. Los errores siguen llegando como `ApiResponseDTO` y se normalizan igual.
+ * Como `apiFetch`, pero para respuestas binarias (imágenes de soporte, PDF o Excel de un reporte): devuelve el cuerpo
+ * en streaming sin leerlo a memoria. Con `body` va como POST con JSON (reportes con filtros). Los errores siguen
+ * llegando como `ApiResponseDTO` y se normalizan igual.
  */
 export async function apiFetchBinary(
   clientKey: ApiClientKey,
@@ -81,16 +82,19 @@ export async function apiFetchBinary(
   opts: ApiFetchOptions = {},
 ): Promise<ApiBinaryResult> {
   const config = getApiClientConfig(clientKey);
+  const hasBody = opts.body !== undefined;
 
   let res: Response;
   try {
     res = await fetch(buildUrl(config.baseUrl, path, opts.query), {
-      method: 'GET',
+      method: hasBody ? 'POST' : 'GET',
       headers: {
+        ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
         ...(opts.accessToken ? { Authorization: `Bearer ${opts.accessToken}` } : {}),
         ...(opts.clientIp ? { 'X-Forwarded-For': opts.clientIp } : {}),
         ...opts.headers,
       },
+      body: hasBody ? JSON.stringify(opts.body) : undefined,
       signal: AbortSignal.timeout(config.timeoutMs),
       cache: 'no-store',
     });

@@ -41,6 +41,11 @@ export const paquetesQuerySchema = paginationQuerySchema.extend({
 
 export type PaquetesQuery = z.infer<typeof paquetesQuerySchema>;
 
+/** Formatos del informe general de notificaciones (los acepta el backend como `FormatoReporte`). */
+export const FORMATOS_INFORME = ['PDF', 'XLSX'] as const;
+export const formatoInformeSchema = z.enum(FORMATOS_INFORME);
+export type FormatoInforme = z.infer<typeof formatoInformeSchema>;
+
 /**
  * Alta o edición del paquete (PRD 7.1): `id` presente = edición. Las órdenes llegan como varios `idsRevision` del
  * `FormData`. El máximo de 50 notificaciones lo valida el backend (`app.paquetes.max-notificaciones`).
