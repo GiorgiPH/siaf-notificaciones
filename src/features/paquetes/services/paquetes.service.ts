@@ -27,6 +27,7 @@ const API = {
   iniciar: `${PAQUETES_PATH}/iniciarPaquete`,
   soportes: (idPaquete: number) => `${PAQUETES_PATH}/listarSoportes/${idPaquete}`,
   soporte: (idSoporte: number) => `${PAQUETES_PATH}/descargarSoporte/${idSoporte}`,
+  ficha: (idPaquete: number) => `${PAQUETES_PATH}/generarFichaPaquete/${idPaquete}`,
 } as const;
 
 /** Filtros de la URL comunes a la búsqueda y a los contadores (todo menos el estado y la página). */
@@ -108,4 +109,9 @@ export async function listSoportes(idPaquete: number): Promise<readonly SoporteP
 /** Imagen de un soporte en streaming; solo la usa el route handler `paquetes/soportes/[idSoporte]`. */
 export async function getSoporteStream(idSoporte: number): Promise<ApiBinaryResult> {
   return apiClient('institutional').getBinary(API.soporte(idSoporte));
+}
+
+/** PDF de la ficha del paquete (adjunto); solo lo usa el route handler `paquetes/fichas/[idPaquete]`. */
+export async function getFichaStream(idPaquete: number): Promise<ApiBinaryResult> {
+  return apiClient('institutional').getBinary(API.ficha(idPaquete));
 }

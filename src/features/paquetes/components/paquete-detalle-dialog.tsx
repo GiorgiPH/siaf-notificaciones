@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { ImageOff } from 'lucide-react';
+import { FileDown, ImageOff } from 'lucide-react';
 import { DatosLista, type DatoLista } from '@/core/components/datos-lista';
 import { Badge } from '@/core/components/ui/badge';
 import { Button } from '@/core/components/ui/button';
@@ -24,7 +24,7 @@ import {
   PAQUETE_ESTADO_LABEL,
 } from '@/core/lib/domain/notificaciones';
 import { formatDate, formatDateTime } from '@/core/lib/utils/format';
-import { COLUMNAS_DETALLE, soporteUrl } from '../constants';
+import { COLUMNAS_DETALLE, fichaUrl, IMP_FICHA_LABEL, soporteUrl } from '../constants';
 import { VISTA_NOTIFICACIONES, VISTA_SOPORTES } from '../schemas';
 import type { PaqueteDetalle, SoportePaquete } from '../types';
 
@@ -42,7 +42,7 @@ interface PaqueteDetalleDialogProps {
 /**
  * Detalle del paquete (PRD 7.3, solo lectura en cualquier estado): fechas, notificador, totales, sus notificaciones con
  * domicilio y estatus, y las imágenes de soporte de todo el paquete. La carpeta de ubicación en mapa queda en espera
- * (ADR-004): el domicilio se muestra como texto.
+ * (ADR-004): el domicilio se muestra como texto. "Imp. Ficha" descarga el PDF del paquete.
  */
 export function PaqueteDetalleDialog({ onOpenChange, detalle, soportes, vistaInicial }: PaqueteDetalleDialogProps) {
   const { paquete, notificaciones } = detalle;
@@ -178,6 +178,12 @@ export function PaqueteDetalleDialog({ onOpenChange, detalle, soportes, vistaIni
           </div>
         </DialogBody>
         <DialogFooter>
+          <Button asChild variant="outline">
+            <a href={fichaUrl(paquete.idPaquete)} download>
+              <FileDown />
+              {IMP_FICHA_LABEL}
+            </a>
+          </Button>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cerrar
           </Button>

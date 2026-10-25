@@ -44,3 +44,8 @@ export const DISPONIBLES_POR_BUSQUEDA = 100;
 
 /** Ruta del route handler que sirve las imágenes de soporte (el navegador nunca las pide a la API). */
 export const soporteUrl = (idSoporte: number) => `/paquetes/soportes/${idSoporte}`;
+
+/** Ruta del route handler que descarga la ficha del paquete en PDF (PRD 7.3 "Imp. Ficha"). */
+export const fichaUrl = (idPaquete: number) => `/paquetes/fichas/${idPaquete}`;
+/** Texto de la acción, igual que en el aplicativo legado (PRD 7.3). */
+export const IMP_FICHA_LABEL = 'Imp. Ficha';

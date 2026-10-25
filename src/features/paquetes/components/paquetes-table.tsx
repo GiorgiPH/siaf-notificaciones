@@ -1,6 +1,6 @@
 'use client';
 
-import { Eye, Images, MoreHorizontal, Pencil, Play } from 'lucide-react';
+import { Eye, FileDown, Images, MoreHorizontal, Pencil, Play } from 'lucide-react';
 import { Badge } from '@/core/components/ui/badge';
 import { Button } from '@/core/components/ui/button';
 import {
@@ -12,7 +12,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/core/components/ui/table';
 import { PAQUETE_ESTADO_BADGE, PAQUETE_ESTADO_LABEL } from '@/core/lib/domain/notificaciones';
 import { formatDate, formatDateTime } from '@/core/lib/utils/format';
-import { COLUMNAS_BANDEJA } from '../constants';
+import { COLUMNAS_BANDEJA, fichaUrl, IMP_FICHA_LABEL } from '../constants';
 import { VISTA_SOPORTES } from '../schemas';
 import type { PaqueteFila } from '../types';
 
@@ -28,7 +28,8 @@ interface PaquetesTableProps {
 
 /**
  * Bandeja de paquetes (PRD 7.2): ID con su estado, notificador, fechas (programada, apertura, cierre) y totales por
- * resultado. Las acciones respetan la matriz del PRD 7.5: Editar e Iniciar solo en Programado.
+ * resultado. Las acciones respetan la matriz del PRD 7.5: Editar e Iniciar solo en Programado; Imp. Ficha (descarga del
+ * PDF) en cualquier estado.
  */
 export function PaquetesTable({ items, onOpen, onEdit, onIniciar }: PaquetesTableProps) {
   const acciones = COLUMNAS_BANDEJA.length - 1;
@@ -84,6 +85,12 @@ export function PaquetesTable({ items, onOpen, onEdit, onIniciar }: PaquetesTabl
                     <DropdownMenuItem onSelect={() => onOpen(fila, VISTA_SOPORTES)}>
                       <Images className="size-4" />
                       Soportes
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <a href={fichaUrl(fila.idPaquete)} download>
+                        <FileDown className="size-4" />
+                        {IMP_FICHA_LABEL}
+                      </a>
                     </DropdownMenuItem>
                     {fila.editable && (
                       <>

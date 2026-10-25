@@ -43,7 +43,7 @@ interface PaquetesListViewProps {
 
 /**
  * Bandeja de paquetes (PRD 7.2): estado, filtros, alta (PRD 7.1), detalle y soportes (7.3), edición e inicio solo en
- * Programado (7.5). "Inf. Num. Órdenes Gral." e "Imp. Ficha" están fuera de alcance (SOW 3.3).
+ * Programado (7.5), "Imp. Ficha" en cualquier estado. "Inf. Num. Órdenes Gral." está fuera de alcance (SOW 3.3).
  */
 export function PaquetesListView({
   query,
