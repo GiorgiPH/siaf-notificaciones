@@ -154,6 +154,11 @@ Referencia real y completa en el repo, cópiala como base:
 `src/features/notificaciones-campo/components/notificaciones-table.tsx` (el catálogo con todas las variantes está en
 `/showcase/tables` de `gob-design-2026`).
 
+**Excepción: vistas que se usan desde el celular en campo** (portal del notificador). Una tabla no cabe en 375 px:
+cada registro es un `Card` que se toca completo (`Link` o botón de acción ancho completo), en una columna en celular y
+2–3 desde `md`/`xl`. El resto de la estructura (tabs en la URL, `EmptyState`, `PaginationControls`) no cambia.
+Referencia: `src/features/mis-paquetes/components/mis-paquetes-list-view.tsx`.
+
 La `Table` del DS no trae marco: va dentro del contenedor de la "Tabla completa"
 del catálogo, siempre con estas mismas clases (tokens del DS):
 

@@ -51,7 +51,7 @@ export default async function NotificacionesListPage({ searchParams }: Notificac
   return (
     <div className="flex min-h-full flex-col">
       <AppPageHeader title={NOTIFICACIONES_TITLE} />
-      <div className="flex flex-col gap-6 p-8">{contenido}</div>
+      <div className="flex flex-col gap-6 p-4 md:p-8">{contenido}</div>
     </div>
   );
 }

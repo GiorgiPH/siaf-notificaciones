@@ -60,7 +60,7 @@ export default async function PaquetesListPage({ searchParams }: PaquetesListPag
   return (
     <div className="flex min-h-full flex-col">
       <AppPageHeader title={PAQUETES_TITLE} />
-      <div className="flex flex-col gap-6 p-8">{contenido}</div>
+      <div className="flex flex-col gap-6 p-4 md:p-8">{contenido}</div>
     </div>
   );
 }

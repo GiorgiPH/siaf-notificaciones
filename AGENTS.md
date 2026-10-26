@@ -97,7 +97,9 @@ Client Component (form) → useActionState(xAction)
 - Los datos se leen en el servidor y bajan como props. Un Client Component **nunca** llama a la API de negocio directo; si necesita datos en respuesta a una interacción, usa una Server Action o un route handler propio que pase por `apiClient`.
 - **Estado de listados en la URL** (`searchParams`: búsqueda, filtros, tab, página) — compartible, sobrevive al refresh y lo lee el Server Component. `useState` para estado puramente visual/local; Context solo para lo transversal (`core/context/`).
 - Carga: `loading.tsx` del segmento (o `<Suspense>`) con el skeleton del DS. Errores no controlados: `error.tsx` del segmento.
-- **Imágenes de soporte:** el navegador nunca las pide a la API. Un route handler propio (`app/(app)/paquetes/soportes/[idSoporte]/route.ts`) las trae por `apiClient` y las sirve en streaming.
+- **Imágenes de soporte:** el navegador nunca las pide a la API. Un route handler propio (`app/(app)/paquetes/soportes/[idSoporte]/route.ts`, `app/(app)/mis-paquetes/soportes/[idSoporte]/route.ts`) las trae por `apiClient` y las sirve en streaming (`core/http/binary-proxy.ts`).
+- **Carga de archivos (fotografías del notificador):** no es una Server Action (límite de 1 MB); el cliente sube una por una a un route handler propio (`app/(app)/mis-paquetes/soportes/route.ts`, POST) que valida sesión, rol y entrada y reenvía el `FormData` con `apiClient(...).postForm`. Después, `router.refresh()`.
+- **Celular:** el shell es responsivo (`SidebarShell`): desde `md` el sidebar es fijo y colapsable; abajo se abre como `Sheet` lateral con el botón de menú del encabezado. Páginas con `p-4 md:p-8`. El portal del notificador se diseña mobile-first (tarjetas en lugar de tablas, hoja inferior para capturar).
 
 ## Dónde va cada cosa nueva
 

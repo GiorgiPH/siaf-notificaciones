@@ -14,6 +14,9 @@ export const ROLES = {
 /** Quién opera el portal administrativo. `ROLE_ADMIN_SIAF` tiene todos los módulos en el backend. */
 export const ADMIN_NOTIFICACIONES_ROLES: readonly Role[] = [ROLES.adminNotificaciones, ROLES.admin];
 
+/** Quién usa el portal del notificador (`/mis-paquetes`): solo sus paquetes, el backend valida al dueño. */
+export const NOTIFICADOR_ROLES: readonly Role[] = [ROLES.notificador];
+
 export type Role = (typeof ROLES)[keyof typeof ROLES];
 
 export function hasAnyRole(user: AuthUser, roles: readonly string[]): boolean {

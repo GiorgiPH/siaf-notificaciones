@@ -38,6 +38,8 @@ export async function apiFetch<T>(
 ): Promise<ApiFetchResult<T>> {
   const config = getApiClientConfig(clientKey);
   const hasBody = opts.body !== undefined;
+  // FormData (archivos) va tal cual y sin Content-Type: fetch pone multipart con su boundary.
+  const isForm = opts.body instanceof FormData;
 
   let res: Response;
   try {
@@ -45,12 +47,12 @@ export async function apiFetch<T>(
       method,
       headers: {
         Accept: 'application/json',
-        ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
+        ...(hasBody && !isForm ? { 'Content-Type': 'application/json' } : {}),
         ...(opts.accessToken ? { Authorization: `Bearer ${opts.accessToken}` } : {}),
         ...(opts.clientIp ? { 'X-Forwarded-For': opts.clientIp } : {}),
         ...opts.headers,
       },
-      body: hasBody ? JSON.stringify(opts.body) : undefined,
+      body: isForm ? opts.body : hasBody ? JSON.stringify(opts.body) : undefined,
       signal: AbortSignal.timeout(config.timeoutMs),
       ...(opts.next ? { next: opts.next } : { cache: 'no-store' }),
     });

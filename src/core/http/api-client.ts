@@ -30,6 +30,9 @@ export function apiClient(clientKey: ApiClientKey) {
     get: <T>(path: string, opts?: ApiRequestOptions): Promise<ApiResponse<T>> => send<T>('GET', path, undefined, opts),
     post: <T>(path: string, body?: unknown, opts?: ApiRequestOptions): Promise<ApiResponse<T>> =>
       send<T>('POST', path, body, opts),
+    /** POST multipart (p. ej. carga de una fotografía); el `FormData` se reenvía tal cual. */
+    postForm: <T>(path: string, form: FormData, opts?: ApiRequestOptions): Promise<ApiResponse<T>> =>
+      send<T>('POST', path, form, opts),
     put: <T>(path: string, body?: unknown, opts?: ApiRequestOptions): Promise<ApiResponse<T>> =>
       send<T>('PUT', path, body, opts),
     patch: <T>(path: string, body?: unknown, opts?: ApiRequestOptions): Promise<ApiResponse<T>> =>

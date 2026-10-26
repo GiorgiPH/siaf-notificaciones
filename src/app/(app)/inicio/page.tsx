@@ -40,7 +40,7 @@ export default async function InicioDashboardPage({ searchParams }: InicioDashbo
     return (
       <div className="flex min-h-full flex-col">
         <AppPageHeader title={`Hola, ${user.displayName}`} subtitle={APP_DESCRIPTION} />
-        <div className="flex flex-col gap-8 p-8">
+        <div className="flex flex-col gap-8 p-4 md:p-8">
           <AlertBanner variant="info">
             Tu usuario ya no tiene pantallas en {perfil.sistema.nombre}. Solicita el acceso al administrador del SIAF.
           </AlertBanner>
@@ -69,7 +69,7 @@ export default async function InicioDashboardPage({ searchParams }: InicioDashbo
           </Button>
         }
       />
-      <div className="flex flex-col gap-8 p-8">{contenido}</div>
+      <div className="flex flex-col gap-8 p-4 md:p-8">{contenido}</div>
     </div>
   );
 }

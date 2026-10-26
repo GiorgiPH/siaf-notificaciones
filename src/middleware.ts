@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { ADMIN_NOTIFICACIONES_ROLES, hasAnyRole } from '@/core/auth/roles';
+import { ADMIN_NOTIFICACIONES_ROLES, hasAnyRole, NOTIFICADOR_ROLES } from '@/core/auth/roles';
 import {
   HOME_PATH,
   LOGIN_PATH,
+  MIS_PAQUETES_PATH,
   NOTIFICACIONES_PATH,
   PAQUETES_PATH,
   SESSION_EXPIRED_PATH,
@@ -17,6 +18,7 @@ import type { SiafSession } from '@/core/auth/types';
 const ROLE_ROUTES: ReadonlyArray<{ readonly prefix: string; readonly roles: readonly string[] }> = [
   { prefix: NOTIFICACIONES_PATH, roles: ADMIN_NOTIFICACIONES_ROLES },
   { prefix: PAQUETES_PATH, roles: ADMIN_NOTIFICACIONES_ROLES },
+  { prefix: MIS_PAQUETES_PATH, roles: NOTIFICADOR_ROLES },
 ];
 
 /**

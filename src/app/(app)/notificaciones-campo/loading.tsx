@@ -8,7 +8,7 @@ export default function NotificacionesLoading() {
   return (
     <div className="flex min-h-full flex-col">
       <AppPageHeader title={NOTIFICACIONES_TITLE} />
-      <div className="flex flex-col gap-6 p-8">
+      <div className="flex flex-col gap-6 p-4 md:p-8">
         <div className="flex flex-wrap gap-1">
           {ESTATUS_TABS.map(({ value }) => (
             <Skeleton key={value} className="h-9 w-32 rounded-2xl" />
