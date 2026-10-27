@@ -1,6 +1,6 @@
 ---
 name: domain-list-view
-description: Genera o revisa una pantalla de listado de un dominio de negocio (Usuarios, Proveedores, Catálogos, etc.) en gob-design-2026 (Next.js) — título, tabs de estado opcionales, filtros, botones de acción, tabla y paginador — siguiendo la estructura visual estándar del proyecto y usando exclusivamente componentes ya existentes del Design System. Úsalo cuando el usuario pida crear o ajustar un "listado", "catálogo", "tabla de <entidad>", o cualquier vista de tipo "administrar/gestionar <entidad>".
+description: Genera o revisa una pantalla de listado de un dominio de negocio (Usuarios, Proveedores, Catálogos, etc.) en siaf-notificaciones (Next.js) — título, tabs de estado opcionales, filtros, botones de acción, tabla y paginador — siguiendo la estructura visual estándar del proyecto y usando exclusivamente componentes ya existentes del Design System. Úsalo cuando el usuario pida crear o ajustar un "listado", "catálogo", "tabla de <entidad>", o cualquier vista de tipo "administrar/gestionar <entidad>".
 ---
 
 # Vista de listado de dominio — Cascarón Next
@@ -152,7 +152,7 @@ de fila → `Badge` con variante semántica (`success`, `warning`, `info`,
 
 Referencia real y completa en el repo, cópiala como base:
 `src/features/notificaciones-campo/components/notificaciones-table.tsx` (el catálogo con todas las variantes está en
-`/showcase/tables` de `gob-design-2026`).
+`/showcase/tables` de `siaf`).
 
 **Excepción: vistas que se usan desde el celular en campo** (portal del notificador). Una tabla no cabe en 375 px:
 cada registro es un `Card` que se toca completo (`Link` o botón de acción ancho completo), en una columna en celular y

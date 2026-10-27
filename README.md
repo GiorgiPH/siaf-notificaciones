@@ -2,7 +2,7 @@
 
 Portal del Módulo de Notificaciones del SIAF (Dirección de Auditoría Fiscal, SAF Morelos). Toma del SIAF las órdenes de cartas invitación listas para notificar. Permite agruparlas en paquetes asignados a un notificador y dar seguimiento al resultado en campo. Sustituye al aplicativo de terceros (Painani) y elimina la recaptura de órdenes.
 
-Es un aplicativo independiente del SIAF modernizado (ADR-002), copiado del cascarón `gob-design-2026` sin el catálogo del DS ni el servidor MCP. Todo lo lee y escribe por la API de `siaf-backend`. Reglas de arquitectura y código: `AGENTS.md`.
+Es un aplicativo independiente del SIAF modernizado (ADR-002), copiado del cascarón `siaf` (antes `gob-design-2026`) sin el catálogo del DS ni el servidor MCP. Todo lo lee y escribe por la API de `siaf-backend`. Reglas de arquitectura y código: `AGENTS.md`.
 
 ## Portales
 
@@ -58,7 +58,7 @@ En QA/prod:
 
 ## Design System
 
-Para ver los componentes y sus variantes, usa el catálogo `/showcase` de `gob-design-2026`. Aquí se usan **siempre** tokens semánticos, nunca hex directos (`bg-bg-surface-low text-content-high border-border-md`). Ver `src/app/globals.css`. Las fuentes `KarolSans` y `TwogetherSans` están incluidas en `public/fonts/`.
+Para ver los componentes y sus variantes, usa el catálogo `/showcase` de `siaf`. Aquí se usan **siempre** tokens semánticos, nunca hex directos (`bg-bg-surface-low text-content-high border-border-md`). Ver `src/app/globals.css`. Las fuentes `KarolSans` y `TwogetherSans` están incluidas en `public/fonts/`.
 
 ## Comandos
 

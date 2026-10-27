@@ -1,6 +1,6 @@
 ---
 name: dashboard-view
-description: Genera o revisa una pantalla de dashboard/resumen (KPIs + gráficas) en gob-design-2026 (Next.js) siguiendo la estructura visual estándar del proyecto y usando exclusivamente componentes ya existentes del Design System. Úsalo cuando el usuario pida crear un "dashboard", "resumen", "panel principal", "home" de un módulo, o cualquier vista con tarjetas de métricas + gráficas.
+description: Genera o revisa una pantalla de dashboard/resumen (KPIs + gráficas) en siaf-notificaciones (Next.js) siguiendo la estructura visual estándar del proyecto y usando exclusivamente componentes ya existentes del Design System. Úsalo cuando el usuario pida crear un "dashboard", "resumen", "panel principal", "home" de un módulo, o cualquier vista con tarjetas de métricas + gráficas.
 ---
 
 # Dashboard view — Cascarón Next

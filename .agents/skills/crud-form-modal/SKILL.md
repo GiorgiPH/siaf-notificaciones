@@ -1,6 +1,6 @@
 ---
 name: crud-form-modal
-description: Genera o revisa el modal de formulario de alta/edición de un CRUD (Agregar usuario, Editar proveedor, Nuevo catálogo, etc.) en gob-design-2026 (Next.js) — estructura del diálogo, campos, Server Action, alineación y variantes de los botones Cancelar/Guardar — usando exclusivamente componentes ya existentes del Design System. Úsalo cuando el usuario pida un "modal de formulario", "modal para crear/agregar/editar <entidad>", o el modal que abre el botón principal de un `domain-list-view`.
+description: Genera o revisa el modal de formulario de alta/edición de un CRUD (Agregar usuario, Editar proveedor, Nuevo catálogo, etc.) en siaf-notificaciones (Next.js) — estructura del diálogo, campos, Server Action, alineación y variantes de los botones Cancelar/Guardar — usando exclusivamente componentes ya existentes del Design System. Úsalo cuando el usuario pida un "modal de formulario", "modal para crear/agregar/editar <entidad>", o el modal que abre el botón principal de un `domain-list-view`.
 ---
 
 # Modal de formulario CRUD — Cascarón Next

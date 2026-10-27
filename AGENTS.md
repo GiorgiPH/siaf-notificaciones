@@ -4,7 +4,7 @@ Conocimiento de proyecto para cualquier IA que trabaje aquí. Léase antes de to
 
 ## Qué es este proyecto
 
-Portal del **Módulo de Notificaciones del SIAF** (Dirección de Auditoría Fiscal, SAF Morelos): sustituye al aplicativo de terceros con el que se asignan y siguen en campo las notificaciones de cartas invitación. Es un aplicativo Next.js **independiente** del SIAF modernizado (ADR-002), copiado del cascarón `gob-design-2026` sin el catálogo del DS ni el servidor MCP. No guarda datos propios: todo lo lee y escribe por la API de `siaf-backend` (Spring Boot, context path `/siaf`).
+Portal del **Módulo de Notificaciones del SIAF** (Dirección de Auditoría Fiscal, SAF Morelos): sustituye al aplicativo de terceros con el que se asignan y siguen en campo las notificaciones de cartas invitación. Es un aplicativo Next.js **independiente** del SIAF modernizado (ADR-002), copiado del cascarón `siaf` (antes `gob-design-2026`) sin el catálogo del DS ni el servidor MCP. No guarda datos propios: todo lo lee y escribe por la API de `siaf-backend` (Spring Boot, context path `/siaf`).
 
 Dos portales bajo el mismo login del SIAF:
 
@@ -13,7 +13,7 @@ Dos portales bajo el mismo login del SIAF:
 | Administrativo | `ROLE_ADMIN_NOTIFICACIONES` (y `ROLE_ADMIN_SIAF`) | `/notificaciones-campo` (bandeja y edición), `/paquetes` (armado, seguimiento, detalle, soportes) |
 | Notificador | `ROLE_NOTIFICADOR` | `/mis-paquetes` (solo sus paquetes: resultado e imágenes) |
 
-Negocio y alcance: PRD SIAF Notificaciones v1.1, SOW Notificaciones y Modelo de datos (bóveda Obsidian `Cerebro/01-Proyectos/SIAF - Modernizacion/`). Este documento define *cómo se programa* aquí: capas, estructura, reglas y convenciones. Para ver el catálogo de componentes del DS usa `/showcase` en `gob-design-2026`.
+Negocio y alcance: PRD SIAF Notificaciones v1.1, SOW Notificaciones y Modelo de datos (bóveda Obsidian `Cerebro/01-Proyectos/SIAF - Modernizacion/`). Este documento define *cómo se programa* aquí: capas, estructura, reglas y convenciones. Para ver el catálogo de componentes del DS usa `/showcase` en `siaf`.
 
 Es el equivalente en React de `cascaron-web` (Angular). Las **prácticas y conceptos** son los mismos; cambia la tecnología con que se expresan (ver "Equivalencias con cascaron-web" al final).
 
@@ -233,5 +233,5 @@ Mismas prácticas, distinta tecnología. Útil si vienes del cascarón Angular:
 
 - Proyecto de componentes origen: `../manuales/web/`.
 - Figma DS: https://www.figma.com/design/ITsxyLjIHfHsxYItqH42U6/Morelos-Design-System
-- Catálogo de componentes del DS (`/showcase`): `../gob-design-2026/`.
+- Catálogo de componentes del DS (`/showcase`): `../siaf/`.
 - Negocio: PRD y SOW de SIAF Notificaciones, ADR-002/003/004 y Modelo de datos (Obsidian `Cerebro/01-Proyectos/SIAF - Modernizacion/`).
